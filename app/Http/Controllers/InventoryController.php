@@ -2,137 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\Models\Transaction;
+use App\Models\{Item, Transaction};
 use Illuminate\Http\Request;
 use App\Exports\TransactionsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
 {
-    /**
-     * Menampilkan Dashboard (Ringkasan Stok)
-     */
-    public function index()
-    {
-        $lowStockItems = Item::where('stock', '<=', 5)->orderBy('stock', 'asc')->get();
-        $todayTransactions = Transaction::whereDate('date', today())->count();
-        $totalItems = Item::count();
-        
-        return view('dashboard', compact('lowStockItems', 'todayTransactions', 'totalItems'));
+    public function index() {
+        return view('dashboard');
     }
 
-    /**
-     * Menampilkan Halaman Input Stok
-     */
-    public function manage(Request $request) 
-    { 
-        // Check if type is specified in query string (for different forms)
-        $type = $request->query('type', 'in'); // default to 'in' (pemasukan)
-        return view('manage', compact('type')); 
+    public function manage() {
+        return view('manage');
     }
 
-    /**
-     * Menyimpan Transaksi Masuk/Keluar
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'category' => 'required|in:SAYUR,IKAN,AYAM,SEAFOOD,BUMBU',
-            'unit'     => 'required|in:KG,EKOR,LITER,IKAT,BUNGKUS,PORSI',
-            'type'     => 'required|in:in,out',
-            'quantity' => 'required|numeric|min:0.1',
-            'date'     => 'required|date',
-        ]);
-
-        // Cari barang berdasarkan nama, jika tidak ada maka buat baru
+    public function store(Request $request) {
         $item = Item::firstOrCreate(
             ['name' => strtoupper($request->name)],
-            [
-                'category' => $request->category, 
-                'unit'     => $request->unit, 
-                'stock'    => 0,
-                'location' => $request->location ?? 'GUDANG UTAMA'
-            ]
+            ['category' => $request->category, 'unit' => $request->unit, 'location' => $request->location, 'stock' => 0]
         );
 
-        // Jika barang sudah ada, update kategorinya agar tetap sinkron
-        if (!$item->wasRecentlyCreated) {
-            $item->update([
-                'category' => $request->category, 
-                'unit'     => $request->unit,
-                'location' => $request->location ?? $item->location
-            ]);
+        if ($request->type == 'in') {
+            $item->increment('stock', $request->quantity);
+        } else {
+            if ($item->stock < $request->quantity) {
+                return back()->with('error', "Stok tidak cukup!");
+            }
+            $item->decrement('stock', $request->quantity);
         }
 
-        // Cek apakah stok cukup jika barang keluar
-        if ($request->type == 'out' && $item->stock < $request->quantity) {
-            return back()->with('error', "Stok {$item->name} sisa {$item->stock}, tidak cukup!");
-        }
-
-        // Update stok di tabel items
-        $request->type == 'in' 
-            ? $item->increment('stock', $request->quantity) 
-            : $item->decrement('stock', $request->quantity);
-
-        // Simpan catatan ke tabel transactions
         Transaction::create([
-            'item_id'  => $item->id,
-            'type'     => $request->type,
+            'item_id' => $item->id,
+            'type' => $request->type,
             'quantity' => $request->quantity,
-            'date'     => $request->date,
+            'date' => $request->date
         ]);
 
-        return redirect()->route('report')->with('success', "Stok {$item->name} berhasil diperbarui!");
+        return redirect()->route('report')->with('success', "Data Berhasil Disimpan!");
     }
 
-    /**
-     * Menampilkan Halaman Laporan Mutasi (Lengkap dengan Filter)
-     */
-    public function report(Request $request)
-    {
-        // Menangkap parameter filter dari URL
-        $filter = $request->query('filter', 'all'); 
+    public function report(Request $request) {
+        $filter = $request->query('filter', 'all');
+        $search = $request->query('search');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
-        $search = $request->query('search');
 
         $query = Transaction::with('item');
 
-        // Filter berdasarkan Status (Semua / Masuk / Keluar)
-        if ($filter == 'in') {
-            $query->where('type', 'in');
-        } elseif ($filter == 'out') {
-            $query->where('type', 'out');
-        }
-
-        // Filter berdasarkan Rentang Tanggal
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
-
-        // Filter berdasarkan Search
+        if ($filter == 'in') $query->where('type', 'in');
+        if ($filter == 'out') $query->where('type', 'out');
         if ($search) {
             $query->whereHas('item', function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
+                $q->where('name', 'like', "%{$search}%");
             });
         }
+        if ($startDate && $endDate) $query->whereBetween('date', [$startDate, $endDate]);
 
-        $transactions = $query->latest('date')->latest('created_at')->get();
+        // Ambil data dari ID terkecil agar perhitungan saldo benar
+        $transactions = $query->orderBy('id', 'asc')->get();
         
-        // Pastikan variabel 'filter' dikirim ke view untuk mencegah error Undefined Variable
         return view('report', compact('transactions', 'filter', 'startDate', 'endDate'));
     }
 
-    /**
-     * Menangani Ekspor Data ke Excel
-     */
-    public function exportExcel(Request $request)
-    {
-        $startDate = $request->query('start_date');
-        $endDate = $request->query('end_date');
-
-        return Excel::download(new TransactionsExport($startDate, $endDate), 'Laporan_Gudang_CakDer.xlsx');
+    // INI SOLUSI UNTUK GAMBAR ERROR NO 3
+    public function exportExcel(Request $request) {
+        return Excel::download(new TransactionsExport($request->start_date, $request->end_date), 'Laporan_Lalapan_CakDer.xlsx');
     }
 }

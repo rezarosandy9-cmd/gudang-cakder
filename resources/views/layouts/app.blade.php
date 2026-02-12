@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cak Der Inventory</title>
+    <title>Lalapan Cak Der - Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0;
-            padding: 0;
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        /* Memastikan navigasi tidak bertumpuk di layar sangat kecil */
+        .nav-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .nav-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
-    <main>@yield('content')</main>
-
+<body class="bg-gray-100">
+    @yield('content')
     @stack('scripts')
 </body>
 </html>

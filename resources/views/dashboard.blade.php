@@ -2,69 +2,54 @@
 
 @section('content')
 <div class="min-h-screen w-full bg-orange-500">
-    <nav class="bg-orange-500 py-4">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                        <span class="text-orange-600 font-black text-lg">CD</span>
+   <nav class="bg-orange-500 sticky top-0 z-50 shadow-lg border-b border-orange-400">
+    <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
+                        <span class="text-orange-600 font-black text-sm">CD</span>
                     </div>
-                    <span class="text-gray-900 font-black italic text-xl tracking-tighter uppercase">Lalapan Seafood Cak Der</span>
+                    <div class="flex flex-col text-white font-black italic uppercase text-sm leading-none">
+                        <span>LALAPAN <span class="text-yellow-400">CAK DER</span></span>
+                        <span class="text-orange-100 text-[8px] font-bold tracking-widest mt-1 uppercase">Inventory System</span>
+                    </div>
                 </div>
                 
-                <div class="flex gap-3">
-                    <a href="{{ route('manage') }}" class="px-6 py-2.5 bg-white rounded-xl text-gray-900 text-xs font-black uppercase italic tracking-widest hover:bg-gray-100 transition-all shadow-md">
-                        Kelola Barang
-                    </a>
-                    <a href="{{ route('report') }}" class="px-6 py-2.5 bg-white rounded-xl text-gray-900 text-xs font-black uppercase italic tracking-widest hover:bg-gray-100 transition-all shadow-md">
-                        Laporan Barang
-                    </a>
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-black uppercase italic tracking-widest hover:bg-black transition-all shadow-md">
-                            Log Out
-                        </button>
-                    </form>
-                </div>
+                <form action="{{ route('logout') }}" method="POST" class="md:hidden">
+                    @csrf 
+                    <button class="bg-red-600 px-3 py-2 rounded-lg text-[9px] font-black uppercase text-white shadow-md">OUT</button>
+                </form>
             </div>
-        </div>
-    </nav>
 
-    <div class="relative h-[calc(100vh-80px)] overflow-hidden">
-        <img src="https://res.cloudinary.com/dk0z4ums3/image/upload/v1658750312/attached_image/manfaat-kepiting-untuk-kesehatan-ada-banyak-lho.jpg" 
-             class="w-full h-full object-cover" 
-             alt="Seafood Banner">
-        
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-orange-500/80"></div>
-        
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <div class="mb-6">
-                <p class="text-white text-sm font-bold tracking-[0.5em] uppercase opacity-80 mb-4">
-                    Management Information System
-                </p>
-                <div class="h-[2px] w-24 bg-orange-500 mx-auto"></div>
+            <div class="flex items-center justify-end gap-2 overflow-x-auto pb-2 md:pb-0">
+                <a href="{{ route('dashboard') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-white text-orange-600 shadow-md whitespace-nowrap">Dashboard</a>
+                <a href="{{ route('manage') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-orange-600/50 text-white border border-white/10 whitespace-nowrap hover:bg-orange-400">Kelola Barang</a>
+                <a href="{{ route('report') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-orange-600/50 text-white border border-white/10 whitespace-nowrap hover:bg-orange-400">Laporan Barang</a>
+                
+                <form action="{{ route('logout') }}" method="POST" class="hidden md:block">
+                    @csrf 
+                    <button type="submit" class="ml-2 px-5 py-2.5 bg-red-600 text-white rounded-xl text-[9px] font-black uppercase italic shadow-lg hover:bg-red-700 transition-all">Log Out</button>
+                </form>
             </div>
-            
-            <h1 class="text-white text-6xl md:text-9xl font-black uppercase mb-8 tracking-tighter leading-none italic">
-                LALAPAN <br> 
-                <span class="text-orange-500">&</span> SEAFOOD <br>
-                CAK DER
+
+        </div>
+    </div>
+</nav>
+
+    <div class="relative h-[calc(100vh-120px)] md:h-[calc(100vh-80px)] overflow-hidden">
+        <img src="https://res.cloudinary.com/dk0z4ums3/image/upload/v1658750312/attached_image/manfaat-kepiting-untuk-kesehatan-ada-banyak-lho.jpg" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-orange-500/90"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+            <h1 class="text-white text-5xl md:text-9xl font-black uppercase italic leading-[0.9] tracking-tighter mb-8">
+                LALAPAN & SEAFOOD <br> <span class="text-yellow-400">CAK DER</span>
             </h1>
-            
-            <div class="space-y-2 bg-black/30 backdrop-blur-md p-6 rounded-3xl border border-white/10">
-                <p class="text-white text-sm font-medium tracking-widest uppercase">
-                    Jl. Raya Wendit Tim. No.Kav. 3, Boro Bugis, Kec. Pakis
-                </p>
-                <p class="text-orange-200 text-[10px] font-black uppercase tracking-[0.3em]">
-                    Kabupaten Malang, Jawa Timur &bull; Indonesia
-                </p>
-            </div>
-        </div>
-
-        <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-full text-center">
-            <div class="inline-block px-8 py-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full">
-                <p class="text-white text-xs font-black uppercase tracking-[0.6em] italic">
-                    Rajanya Kepiting, Surganya Pecinta Pedas
+            <div class="bg-black/30 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-white max-w-lg">
+                <p class="text-xs font-bold tracking-widest uppercase mb-2">Selamat Datang di Website Pengelolaan Gudang</p>
+                <div class="h-[2px] w-20 bg-yellow-400 mx-auto mb-4"></div>
+                <p class="text-[10px] md:text-xs font-light tracking-wide opacity-80 leading-relaxed">
+                    Jl. Raya Wendit Tim. No.Kav. 3, Pakis, Malang <br> Rajanya Kepiting, Surganya Pecinta Pedas
                 </p>
             </div>
         </div>
