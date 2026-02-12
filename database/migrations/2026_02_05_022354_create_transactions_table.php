@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            // Menghubungkan ke tabel items
+            // menghubungkan ke tabel items
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['in', 'out']); // Masuk (in) atau Keluar (out)
-            $table->integer('quantity');         // Jumlah barang
-            $table->date('date');                // Tanggal input
+            $table->enum('type', ['in', 'out']); // masuk (in) atau Keluar (out)
+            $table->integer('quantity');         // jumlah barang
+            $table->date('date');                // tanggal input
             $table->timestamps();
         });
     }
