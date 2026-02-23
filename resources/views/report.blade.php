@@ -67,7 +67,7 @@
                             <th class="px-8 py-6">ID Ref</th>
                             <th class="px-8 py-6">Kategori</th>
                             <th class="px-8 py-6">Nama Barang</th>
-                            <th class="px-8 py-6 text-center">Mutasi</th>
+                            <th class="px-8 py-6 text-center">Lokasi</th> <th class="px-8 py-6 text-center">Mutasi</th>
                             <th class="px-8 py-6 text-center">Total Stok</th>
                             <th class="px-8 py-6 text-right">Tanggal</th>
                         </tr>
@@ -88,6 +88,11 @@
                             <td class="px-8 py-5 text-gray-400 italic">#{{ str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}</td>
                             <td class="px-8 py-5"><span class="text-[10px] text-gray-500 border-b-2 border-orange-200">{{ $trx->item->category }}</span></td>
                             <td class="px-8 py-5 text-gray-900">{{ $trx->item->name }}</td>
+                            
+                            <td class="px-8 py-5 text-center text-orange-600 font-black">
+                                {{ $trx->item->location ?? 'BELUM DIATUR' }}
+                            </td>
+
                             <td class="px-8 py-5 text-center {{ $trx->type == 'in' ? 'text-green-600' : 'text-red-500' }}">
                                 {{ $trx->type == 'in' ? '+' : '-' }}{{ $trx->quantity }} {{ $trx->item->unit }}
                             </td>
@@ -99,7 +104,7 @@
                             <td class="px-8 py-5 text-right text-gray-400">{{ date('d/m/Y', strtotime($trx->date)) }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="py-24 text-center text-gray-300 italic uppercase tracking-[0.3em]">Data Kosong</td></tr>
+                        <tr><td colspan="7" class="py-24 text-center text-gray-300 italic uppercase tracking-[0.3em]">Data Kosong</td></tr>
                         @endforelse
                     </tbody>
                 </table>
