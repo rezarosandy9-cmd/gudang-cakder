@@ -7,27 +7,37 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function showLogin() {
-        return view('login');
+    // 1. Menampilkan Halaman Login
+    public function index()
+    {
+        // Pastikan file login.blade.php ada di folder resources/views/
+        return view('login'); 
     }
 
-    public function authenticate(Request $request) {
+    // 2. Logika Memeriksa Username & Password (Fungsi yang tadi Hilang)
+    public function authenticate(Request $request)
+    {
+        // Validasi input
         $credentials = $request->validate([
-            'username' => ['required'], // Menggunakan username
+            'username' => ['required'],
             'password' => ['required'],
         ]);
 
+        // Cek ke database apakah cocok
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended('/')->with('success', 'Selamat Datang, ' . Auth::user()->name);
         }
 
+        // Jika salah, balikkan ke login dengan pesan error
         return back()->withErrors([
             'username' => 'Username atau password salah.',
         ])->onlyInput('username');
     }
 
-    public function logout(Request $request) {
+    // 3. Logika Log Out
+    public function logout(Request $request)
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

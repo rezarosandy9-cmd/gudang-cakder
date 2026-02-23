@@ -2,25 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Item, Transaction};
+use App\Models\Item;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Exports\TransactionsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransactionsExport;
 
 class InventoryController extends Controller
 {
-    public function index() {
-        return view('dashboard');
+    // Menampilkan Halaman Dashboard
+    public function index() 
+    { 
+        return view('dashboard'); 
     }
 
-    public function manage() {
-        return view('manage');
+    // Menampilkan Halaman Kelola Stok
+    public function manage() 
+    { 
+        return view('manage'); 
     }
 
-    public function store(Request $request) {
+    // Logika Simpan Data (Masuk/Keluar)
+    public function store(Request $request) 
+    {
         $item = Item::firstOrCreate(
             ['name' => strtoupper($request->name)],
-            ['category' => $request->category, 'unit' => $request->unit, 'location' => $request->location, 'stock' => 0]
+            [
+                'category' => $request->category, 
+                'unit' => $request->unit, 
+                'location' => $request->location, 
+                'stock' => 0
+            ]
         );
 
         if ($request->type == 'in') {
@@ -39,34 +51,35 @@ class InventoryController extends Controller
             'date' => $request->date
         ]);
 
-        return redirect()->route('report')->with('success', "Data Berhasil Disimpan!");
+        return redirect()->route('report')->with('success', "Data stok berhasil diperbarui!");
     }
 
-    public function report(Request $request) {
-        $filter = $request->query('filter', 'all');
-        $search = $request->query('search');
+    // Menampilkan Halaman Laporan dengan Filter
+    public function report(Request $request) 
+    {
+        $query = Transaction::with('item');
+        
+        if ($request->filter == 'in') $query->where('type', 'in');
+        if ($request->filter == 'out') $query->where('type', 'out');
+        
+        if ($request->search) {
+            $query->whereHas('item', function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%");
+            });
+        }
+        
+        $transactions = $query->orderBy('id', 'asc')->get();
+        return view('report', compact('transactions'));
+    }
+
+    // Fitur Export Excel dengan Filter Tanggal
+    public function exportExcel(Request $request) 
+    {
+        // Mengambil tanggal dari input form
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
 
-        $query = Transaction::with('item');
-
-        if ($filter == 'in') $query->where('type', 'in');
-        if ($filter == 'out') $query->where('type', 'out');
-        if ($search) {
-            $query->whereHas('item', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            });
-        }
-        if ($startDate && $endDate) $query->whereBetween('date', [$startDate, $endDate]);
-
-        // Ambil data dari ID terkecil agar perhitungan saldo benar
-        $transactions = $query->orderBy('id', 'asc')->get();
-        
-        return view('report', compact('transactions', 'filter', 'startDate', 'endDate'));
-    }
-
-    // INI SOLUSI UNTUK GAMBAR ERROR NO 3
-    public function exportExcel(Request $request) {
-        return Excel::download(new TransactionsExport($request->start_date, $request->end_date), 'Laporan_Lalapan_CakDer.xlsx');
+        // Mengirim tanggal ke file Export
+        return Excel::download(new TransactionsExport($startDate, $endDate), 'Laporan_Gudang_CakDer.xlsx');
     }
 }
