@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+
 <div class="min-h-screen bg-gray-100 pb-12">
     <nav class="bg-orange-500 sticky top-0 z-50 shadow-lg border-b border-orange-400">
         <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
@@ -52,9 +54,9 @@
                 @csrf
                 
                 <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Nama Barang :</label>
-                    <select name="name" id="item_select" required onchange="updateFields()" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-orange-500 font-bold uppercase transition-all cursor-pointer">
-                        <option value="" disabled selected>-- PILIH BARANG --</option>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Cari Nama Barang :</label>
+                    <select name="name" id="item_select" required class="w-full">
+                        <option value="">-- KETIK NAMA BARANG --</option>
                         @foreach($items as $item)
                             <option value="{{ $item->name }}" 
                                     data-category="{{ $item->category }}" 
@@ -85,7 +87,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Jumlah :</label>
-                        <input type="number" name="quantity" required step="any" class="w-full px-5 py-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-orange-600 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-orange-200">
+                        <input type="number" name="quantity" required step="any" class="w-full px-5 py-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-orange-600 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-orange-300">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Tanggal :</label>
@@ -103,20 +105,33 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 <script>
-function updateFields() {
-    const select = document.getElementById('item_select');
-    const selectedOption = select.options[select.selectedIndex];
+    // Inisialisasi Fitur Pencarian (Tom Select)
+    const control = new TomSelect("#item_select", {
+        create: false,
+        sortField: { field: "text", direction: "asc" },
+        placeholder: "KETIK UNTUK MENCARI...",
+        onChange: function(value) {
+            updateFields();
+        }
+    });
 
-    // Ambil data-attributes dari option yang dipilih
-    const category = selectedOption.getAttribute('data-category');
-    const unit = selectedOption.getAttribute('data-unit');
-    const location = selectedOption.getAttribute('data-location');
+    function updateFields() {
+        // Ambil elemen asli untuk mendapatkan data-attributes
+        const select = document.getElementById('item_select');
+        const selectedOption = select.options[select.selectedIndex];
 
-    // Isi ke dalam input readonly
-    document.getElementById('display_category').value = category;
-    document.getElementById('display_unit').value = unit;
-    document.getElementById('display_location').value = location;
-}
+        if (selectedOption && value !== "") {
+            document.getElementById('display_category').value = selectedOption.getAttribute('data-category');
+            document.getElementById('display_unit').value = selectedOption.getAttribute('data-unit');
+            document.getElementById('display_location').value = selectedOption.getAttribute('data-location');
+        } else {
+            // Reset jika tidak ada yang dipilih
+            document.getElementById('display_category').value = "";
+            document.getElementById('display_unit').value = "";
+            document.getElementById('display_location').value = "";
+        }
+    }
 </script>
 @endsection
