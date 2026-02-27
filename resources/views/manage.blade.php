@@ -50,46 +50,42 @@
             
             <form action="{{ route('manage.store') }}" method="POST" class="p-6 md:p-8 space-y-6">
                 @csrf
+                
                 <div>
                     <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Nama Barang :</label>
-                    <input type="text" name="name" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-orange-500 font-bold uppercase transition-all">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Kategori :</label>
-                        <select name="category" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold uppercase outline-none focus:border-orange-500">
-                            <option value="SEAFOOD">SEAFOOD</option>
-                            <option value="SAYUR">SAYUR</option>
-                            <option value="IKAN">IKAN</option>
-                            <option value="AYAM">AYAM</option>
-                            <option value="BUMBU">BUMBU</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Satuan :</label>
-                        <select name="unit" id="unit-select" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold uppercase outline-none focus:border-orange-500">
-                            <option value="KG">KG</option>
-                            <option value="EKOR">EKOR</option>
-                            <option value="PORSI">PORSI</option>
-                            <option value="LITER">LITER</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Lokasi Penyimpanan :</label>
-                    <select name="location" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold uppercase outline-none focus:border-orange-500">
-                        <option value="GUDANG UTAMA">GUDANG UTAMA</option>
-                        <option value="FREEZER">FREEZER</option>
-                        <option value="DAPUR">DAPUR</option>
+                    <select name="name" id="item_select" required onchange="updateFields()" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-orange-500 font-bold uppercase transition-all cursor-pointer">
+                        <option value="" disabled selected>-- PILIH BARANG --</option>
+                        @foreach($items as $item)
+                            <option value="{{ $item->name }}" 
+                                    data-category="{{ $item->category }}" 
+                                    data-unit="{{ $item->unit }}" 
+                                    data-location="{{ $item->location }}">
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Kategori :</label>
+                        <input type="text" name="category" id="display_category" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Satuan :</label>
+                        <input type="text" name="unit" id="display_unit" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Lokasi Penyimpanan :</label>
+                    <input type="text" name="location" id="display_location" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Jumlah :</label>
-                        <input type="number" name="quantity" required step="any" class="w-full px-5 py-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-orange-600 text-center text-2xl focus:outline-none">
+                        <input type="number" name="quantity" required step="any" class="w-full px-5 py-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-orange-600 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-orange-200">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Tanggal :</label>
@@ -106,4 +102,21 @@
         </div>
     </div>
 </div>
+
+<script>
+function updateFields() {
+    const select = document.getElementById('item_select');
+    const selectedOption = select.options[select.selectedIndex];
+
+    // Ambil data-attributes dari option yang dipilih
+    const category = selectedOption.getAttribute('data-category');
+    const unit = selectedOption.getAttribute('data-unit');
+    const location = selectedOption.getAttribute('data-location');
+
+    // Isi ke dalam input readonly
+    document.getElementById('display_category').value = category;
+    document.getElementById('display_unit').value = unit;
+    document.getElementById('display_location').value = location;
+}
+</script>
 @endsection

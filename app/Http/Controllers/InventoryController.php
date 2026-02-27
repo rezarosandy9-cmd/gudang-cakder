@@ -10,19 +10,18 @@ use App\Exports\TransactionsExport;
 
 class InventoryController extends Controller
 {
-    // Menampilkan Halaman Dashboard
     public function index() 
     { 
         return view('dashboard'); 
     }
 
-    // Menampilkan Halaman Kelola Stok
+    // REVISI: Mengirim data semua barang ke halaman manage
     public function manage() 
     { 
-        return view('manage'); 
+        $items = Item::all(); // Mengambil semua daftar barang untuk select option
+        return view('manage', compact('items')); 
     }
 
-    // Logika Simpan Data (Masuk/Keluar)
     public function store(Request $request) 
     {
         $item = Item::firstOrCreate(
@@ -54,7 +53,6 @@ class InventoryController extends Controller
         return redirect()->route('report')->with('success', "Data stok berhasil diperbarui!");
     }
 
-    // Menampilkan Halaman Laporan dengan Filter
     public function report(Request $request) 
     {
         $query = Transaction::with('item');
@@ -72,14 +70,19 @@ class InventoryController extends Controller
         return view('report', compact('transactions'));
     }
 
-    // Fitur Export Excel dengan Filter Tanggal
     public function exportExcel(Request $request) 
     {
-        // Mengambil tanggal dari input form
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
-
-        // Mengirim tanggal ke file Export
         return Excel::download(new TransactionsExport($startDate, $endDate), 'Laporan_Gudang_CakDer.xlsx');
+    }
+
+    // TAMBAHAN: Fungsi untuk ditarik ke aplikasi Desktop Visual Studio
+    public function getApiItems() 
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => Item::all()
+        ]);
     }
 }
