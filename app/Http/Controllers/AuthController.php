@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -42,5 +44,46 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login');
+    }
+
+    public function apilogin(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        // Ambil user
+        $user = User::where('username', $request->username)->first();
+
+        // Jika user tidak ditemukan
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User tidak ditemukan'
+            ], 404);
+        }
+
+        // Cek password (WAJIB pakai Hash)
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Password salah'
+            ], 401);
+        }
+
+        // Jika berhasil login
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login berhasil',
+            'data' => $user->only([
+                'id',
+                'name',
+                'username',
+                'created_at',
+                'updated_at'
+            ])
+        ], 200);
     }
 }

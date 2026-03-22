@@ -7,7 +7,6 @@
     <nav class="bg-orange-500 sticky top-0 z-50 shadow-lg border-b border-orange-400">
         <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
             <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                
                 <div class="flex items-center justify-between w-full md:w-auto">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
@@ -18,7 +17,6 @@
                             <span class="text-orange-100 text-[8px] font-bold tracking-widest mt-1 uppercase">Inventory System</span>
                         </div>
                     </div>
-                    
                     <form action="{{ route('logout') }}" method="POST" class="md:hidden">
                         @csrf 
                         <button class="bg-red-600 px-3 py-2 rounded-lg text-[9px] font-black uppercase text-white shadow-md">OUT</button>
@@ -29,7 +27,6 @@
                     <a href="{{ route('dashboard') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-orange-600/50 text-white border border-white/10 whitespace-nowrap hover:bg-orange-400">Dashboard</a>
                     <a href="{{ route('manage') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-white text-orange-600 shadow-md whitespace-nowrap">Kelola Barang</a>
                     <a href="{{ route('report') }}" class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase italic tracking-widest bg-orange-600/50 text-white border border-white/10 whitespace-nowrap hover:bg-orange-400">Laporan Barang</a>
-                    
                     <form action="{{ route('logout') }}" method="POST" class="hidden md:block">
                         @csrf 
                         <button type="submit" class="ml-2 px-5 py-2.5 bg-red-600 text-white rounded-xl text-[9px] font-black uppercase italic shadow-lg hover:bg-red-700 transition-all">Log Out</button>
@@ -71,17 +68,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Kategori :</label>
-                        <input type="text" name="category" id="display_category" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                        <input type="text" name="category" id="display_category" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-400 italic cursor-not-allowed" placeholder="- Otomatis -">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Satuan :</label>
-                        <input type="text" name="unit" id="display_unit" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                        <input type="text" name="unit" id="display_unit" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-400 italic cursor-not-allowed" placeholder="- Otomatis -">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-black text-gray-400 uppercase italic mb-2">Lokasi Penyimpanan :</label>
-                    <input type="text" name="location" id="display_location" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-500 italic" placeholder="- Otomatis -">
+                    <input type="text" name="location" id="display_location" readonly class="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl font-bold uppercase outline-none text-gray-400 italic cursor-not-allowed" placeholder="- Otomatis -">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -107,27 +104,39 @@
 
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 <script>
-    // Inisialisasi Fitur Pencarian (Tom Select)
-    const control = new TomSelect("#item_select", {
+    // 1. Inisialisasi Tom Select
+    var settings = {
         create: false,
         sortField: { field: "text", direction: "asc" },
-        placeholder: "KETIK UNTUK MENCARI...",
+        placeholder: "KETIK NAMA BARANG...",
+        // Fungsi ini berjalan setiap kali Bapak memilih barang
         onChange: function(value) {
-            updateFields();
+            updateFields(value);
         }
-    });
+    };
+    
+    var control = new TomSelect("#item_select", settings);
 
-    function updateFields() {
-        // Ambil elemen asli untuk mendapatkan data-attributes
+    // 2. Fungsi untuk Menampilkan Data ke Input Kategori, Satuan, dan Lokasi
+    function updateFields(value) {
+        // Ambil elemen select asli
         const select = document.getElementById('item_select');
-        const selectedOption = select.options[select.selectedIndex];
+        
+        // Cari option yang nilainya sama dengan yang dipilih di Tom Select
+        const selectedOption = Array.from(select.options).find(opt => opt.value === value);
 
         if (selectedOption && value !== "") {
+            // AMBIL DATA DARI ATRIBUT DAN TAMPILKAN KE INPUT
             document.getElementById('display_category').value = selectedOption.getAttribute('data-category');
             document.getElementById('display_unit').value = selectedOption.getAttribute('data-unit');
             document.getElementById('display_location').value = selectedOption.getAttribute('data-location');
+            
+            // Ubah warna teks agar lebih jelas saat data tampil
+            document.getElementById('display_category').classList.replace('text-gray-500', 'text-orange-600');
+            document.getElementById('display_unit').classList.replace('text-gray-500', 'text-orange-600');
+            document.getElementById('display_location').classList.replace('text-gray-500', 'text-orange-600');
         } else {
-            // Reset jika tidak ada yang dipilih
+            // Kosongkan kembali jika tidak ada yang dipilih
             document.getElementById('display_category').value = "";
             document.getElementById('display_unit').value = "";
             document.getElementById('display_location').value = "";
