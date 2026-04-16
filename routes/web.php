@@ -4,12 +4,16 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// --- AUTENTIKASI ---
+// ==========================================
+// 🔐 AUTENTIKASI (Halaman Web)
+// ==========================================
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// --- OPERASIONAL GUDANG ---
+// ==========================================
+// 📦 OPERASIONAL GUDANG (Butuh Login Web)
+// ==========================================
 Route::middleware(['auth'])->group(function () {
     // Dashboard Utama
     Route::get('/', [InventoryController::class, 'index'])->name('dashboard');
@@ -18,7 +22,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/manage', [InventoryController::class, 'manage'])->name('manage');
     Route::post('/manage', [InventoryController::class, 'store'])->name('manage.store');
     
-    // Laporan Real-Time & Export Excel
+    // Laporan Real-Time di Web
     Route::get('/report', [InventoryController::class, 'report'])->name('report');
-    Route::get('/report/export', [InventoryController::class, 'exportExcel'])->name('report.export');
 });
+
+// ==========================================
+// 📥 JALUR DOWNLOAD EXCEL (DILUAR AUTH)
+// ==========================================
+// Sengaja ditaruh diluar agar C# Desktop bisa download langsung
+Route::get('/report/export', [InventoryController::class, 'exportExcel'])->name('report.export');

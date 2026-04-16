@@ -2,99 +2,138 @@
 
 namespace Database\Seeders;
 
+use App\Models\Item;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Item;
 
 class ItemSeeder extends Seeder
 {
     public function run(): void
     {
-        // Langkah 1: Bersihkan data lama agar tidak dobel atau nyampur
+        // Kosongkan tabel items agar tidak double/bentrok
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Item::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Langkah 2: Masukkan Data Sesuai List Gambar (Total ~100+ Item)
         $items = [
-            // --- KELOMPOK PROTEIN ---
-            ['name' => 'AYAM', 'category' => 'AYAM', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'BEBEK', 'category' => 'AYAM', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'BURUNG DARA', 'category' => 'AYAM', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'AYAM KAMPUNG', 'category' => 'AYAM', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'LELE', 'category' => 'IKAN', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'GURAMI', 'category' => 'IKAN', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'MUJAIR', 'category' => 'IKAN', 'unit' => 'EKOR', 'location' => 'FREEZER', 'stock' => 0],
-            
-            // --- KELOMPOK SEAFOOD ---
-            ['name' => 'KAKAP PUTIH', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KAKAP MERAH', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KERAPU', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'DORANG', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'PATIN', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'BARONANG', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KUWE', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'AYAM AYAM', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KACI KACI', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'BARAKUDA', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'EKOR KUNING', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KERANG HIJAU', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERANG DARA', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERANG BAMBU', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERANG TAHU', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERANG SIMPING', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'CUMI CUMI', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'UDANG', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KEPITING KECIL', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
-            ['name' => 'KEPITING BESAR', 'category' => 'SEAFOOD', 'unit' => 'KG', 'location' => 'FREEZER', 'stock' => 0],
+            // UNGGAS & IKAN AIR TAWAR
+            ['name' => 'Ayam', 'category' => 'UNGGAS'],
+            ['name' => 'Bebek', 'category' => 'UNGGAS'],
+            ['name' => 'Burung Dara', 'category' => 'UNGGAS'],
+            ['name' => 'Ayam Kampung', 'category' => 'UNGGAS'],
+            ['name' => 'Lele', 'category' => 'IKAN AIR TAWAR'],
+            ['name' => 'Gurami', 'category' => 'IKAN AIR TAWAR'],
+            ['name' => 'Mujair', 'category' => 'IKAN AIR TAWAR'],
 
-            // --- KELOMPOK SAYUR & PELENGKAP ---
-            ['name' => 'KOBIS', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'TERONG', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'TIMUN', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'TAHU', 'category' => 'SAYUR', 'unit' => 'PCS', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'TEMPE', 'category' => 'SAYUR', 'unit' => 'PCS', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KANGKUNG', 'category' => 'SAYUR', 'unit' => 'IKAT', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'TAOGE', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'GENJER', 'category' => 'SAYUR', 'unit' => 'IKAT', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'BABY BUNCIS', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'PAKCOY', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'WORTEL', 'category' => 'SAYUR', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
+            // IKAN LAUT
+            ['name' => 'Kakap Putih', 'category' => 'IKAN LAUT'],
+            ['name' => 'Kakap Merah', 'category' => 'IKAN LAUT'],
+            ['name' => 'Kerapu', 'category' => 'IKAN LAUT'],
+            ['name' => 'Dorang', 'category' => 'IKAN LAUT'],
+            ['name' => 'Patin', 'category' => 'IKAN LAUT'],
+            ['name' => 'Baronang', 'category' => 'IKAN LAUT'],
+            ['name' => 'Kuwe', 'category' => 'IKAN LAUT'],
+            ['name' => 'Ayam Ayam', 'category' => 'IKAN LAUT'],
+            ['name' => 'Kaci Kaci', 'category' => 'IKAN LAUT'],
+            ['name' => 'Barakuda', 'category' => 'IKAN LAUT'],
+            ['name' => 'Ekor Kuning', 'category' => 'IKAN LAUT'],
+            ['name' => 'pe', 'category' => 'IKAN LAUT'],
 
-            // --- KELOMPOK BUMBU & BAHAN MASAK ---
-            ['name' => 'CUMI ASIN', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'TELUR ASIN', 'category' => 'BUMBU', 'unit' => 'BUTIR', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'LOMBOK KECIL', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'LOMBOK LALAP', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'BAWANG MERAH', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'BAWANG PUTIH', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'KRITING IJO', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'KRITING MERAH', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'TOMAT', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'DAPUR', 'stock' => 0],
-            ['name' => 'GULA', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'GARAM KAPAL', 'category' => 'BUMBU', 'unit' => 'PACK', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'MEGGLE SACHET', 'category' => 'BUMBU', 'unit' => 'SACHET', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'ROYCO', 'category' => 'BUMBU', 'unit' => 'PACK', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'MICIN', 'category' => 'BUMBU', 'unit' => 'PACK', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'MENTE', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'WIJEN', 'category' => 'BUMBU', 'unit' => 'KG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'TAUCO', 'category' => 'BUMBU', 'unit' => 'BOTOL', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'MINYAK WIJEN', 'category' => 'BUMBU', 'unit' => 'BOTOL', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'RAJA RASA', 'category' => 'BUMBU', 'unit' => 'BOTOL', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KECAP IKAN', 'category' => 'BUMBU', 'unit' => 'BOTOL', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'TIRAM KALENG', 'category' => 'BUMBU', 'unit' => 'KALENG', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'SAOS INGGRIS', 'category' => 'BUMBU', 'unit' => 'BOTOL', 'location' => 'GUDANG', 'stock' => 0],
-            
-            // --- KELOMPOK NON-FOOD ---
-            ['name' => 'TISSUE MEJA', 'category' => 'LAINNYA', 'unit' => 'PACK', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'DAUN PISANG', 'category' => 'LAINNYA', 'unit' => 'IKAT', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERTAS PRINT BESAR', 'category' => 'LAINNYA', 'unit' => 'ROLL', 'location' => 'GUDANG', 'stock' => 0],
-            ['name' => 'KERTAS PRINT KECIL', 'category' => 'LAINNYA', 'unit' => 'ROLL', 'location' => 'GUDANG', 'stock' => 0],
+            // SEAFOOD (Lengkap dengan ukuran Kepiting)
+            ['name' => 'Kerang Hijau', 'category' => 'SEAFOOD'],
+            ['name' => 'Kerang Dara', 'category' => 'SEAFOOD'],
+            ['name' => 'Kerang Bambu', 'category' => 'SEAFOOD'],
+            ['name' => 'Kerang Tahu', 'category' => 'SEAFOOD'],
+            ['name' => 'Kerang Simping', 'category' => 'SEAFOOD'],
+            ['name' => 'Cumi Cumi', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Kecil', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 150', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 175', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 200', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 250', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 300', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 350', 'category' => 'SEAFOOD'],
+            ['name' => 'Kepiting Besar 400', 'category' => 'SEAFOOD'],
+
+            // BUMBU, SAYUR & LAIN-LAIN
+            ['name' => 'Pete', 'category' => 'SAYUR'],
+            ['name' => 'Aqua', 'category' => 'MINUMAN'],
+            ['name' => 'Saos Inggris', 'category' => 'BUMBU'],
+            ['name' => 'Gula', 'category' => 'BUMBU'],
+            ['name' => 'Garam Kapal', 'category' => 'BUMBU'],
+            ['name' => 'Garam Grasak', 'category' => 'BUMBU'],
+            ['name' => 'Micin', 'category' => 'BUMBU'],
+            ['name' => 'Royco', 'category' => 'BUMBU'],
+            ['name' => 'Meggie Sachet', 'category' => 'BUMBU'],
+            ['name' => 'Pakcoy', 'category' => 'SAYUR'],
+            ['name' => 'Tauge', 'category' => 'SAYUR'],
+            ['name' => 'Genjer', 'category' => 'SAYUR'],
+            ['name' => 'Baby Buncis', 'category' => 'SAYUR'],
+            ['name' => 'Nanas', 'category' => 'BUAH'],
+            ['name' => 'Kangkung', 'category' => 'SAYUR'],
+            ['name' => 'Tahu', 'category' => 'BAHAN'],
+            ['name' => 'Tempe', 'category' => 'BAHAN'],
+            ['name' => 'Kubis', 'category' => 'SAYUR'],
+            ['name' => 'Terong', 'category' => 'SAYUR'],
+            ['name' => 'Selada Air', 'category' => 'SAYUR'],
+            ['name' => 'Jeruk nipis', 'category' => 'BUMBU'],
+            ['name' => 'Jeruk Sambal', 'category' => 'BUMBU'],
+            ['name' => 'wijen', 'category' => 'BUMBU'],
+            ['name' => 'Mente', 'category' => 'BUMBU'],
+            ['name' => 'Gerabah Belah', 'category' => 'IKAN ASIN'],
+            ['name' => 'Klotok', 'category' => 'IKAN ASIN'],
+            ['name' => 'Cumi Asin', 'category' => 'IKAN ASIN'],
+            ['name' => 'Telur Asin', 'category' => 'BAHAN'],
+            ['name' => 'Lombok Kecil', 'category' => 'BUMBU'],
+            ['name' => 'Lombok Lalap', 'category' => 'BUMBU'],
+            ['name' => 'Bawang Merah', 'category' => 'BUMBU'],
+            ['name' => 'Bawang Putih', 'category' => 'BUMBU'],
+            ['name' => 'Kriting Ijo', 'category' => 'BUMBU'],
+            ['name' => 'Kriting Merah', 'category' => 'BUMBU'],
+            ['name' => 'Tomat', 'category' => 'BUMBU'],
+            ['name' => 'Timun', 'category' => 'SAYUR'],
+            ['name' => 'Minya Wijen', 'category' => 'BUMBU'],
+            ['name' => 'Rajarasa', 'category' => 'BUMBU'],
+            ['name' => 'Butter', 'category' => 'BUMBU'],
+            ['name' => 'Kacang Tanah', 'category' => 'BUMBU'],
+            ['name' => 'Kecap Ikan', 'category' => 'BUMBU'],
+            ['name' => 'Brambang goreng', 'category' => 'BUMBU'],
+            ['name' => 'Tiram Kaleng', 'category' => 'BUMBU'],
+            ['name' => 'Merica Halus', 'category' => 'BUMBU'],
+            ['name' => 'Sereh', 'category' => 'BUMBU'],
+            ['name' => 'Kunir', 'category' => 'BUMBU'],
+            ['name' => 'Jahe', 'category' => 'BUMBU'],
+            ['name' => 'Lengkuas', 'category' => 'BUMBU'],
+            ['name' => 'Bumbu Asap(Per Biji)', 'category' => 'BUMBU'],
+            ['name' => 'Bumbu Bakar(Per Biji)', 'category' => 'BUMBU'],
+            ['name' => 'Bumbu Seafood', 'category' => 'BUMBU'],
+            ['name' => 'Terasi', 'category' => 'BUMBU'],
+            ['name' => 'Delmonte Tomat', 'category' => 'BUMBU'],
+            ['name' => 'Delmonte Sambal', 'category' => 'BUMBU'],
+            ['name' => 'Belibis Tomat', 'category' => 'BUMBU'],
+            ['name' => 'Wortel', 'category' => 'SAYUR'],
+            ['name' => 'Daun Pisang', 'category' => 'LOGISTIK'],
+            ['name' => 'Tissue Meja', 'category' => 'LOGISTIK'],
+            ['name' => 'Kertas Print Besar', 'category' => 'LOGISTIK'],
+            ['name' => 'Kertas Print Kecil', 'category' => 'LOGISTIK'],
+            ['name' => 'Tepung Terigu', 'category' => 'BAHAN'],
+            ['name' => 'Tepung Beras', 'category' => 'BAHAN'],
+            ['name' => 'Tepung Kanji', 'category' => 'BAHAN'],
+            ['name' => 'Pasta Tomyum', 'category' => 'BUMBU'],
+            ['name' => 'Kecombrang', 'category' => 'BUMBU'],
+            ['name' => 'Udang Eby', 'category' => 'SEAFOOD'],
+            ['name' => 'Mayonnaise', 'category' => 'BUMBU'],
+            ['name' => 'Juhi (Biji)', 'category' => 'SEAFOOD'],
+            ['name' => 'Kayu Manis', 'category' => 'BUMBU'],
+            ['name' => 'Daun Prei (Gram)', 'category' => 'BUMBU'],
+            ['name' => 'Bombay (gram)', 'category' => 'BUMBU'],
+            ['name' => 'Keripik Usus', 'category' => 'LAIN'],
+            ['name' => 'Tomat Hiaju', 'category' => 'BUMBU'],
+            ['name' => 'Kaldu Ayam', 'category' => 'BUMBU'],
         ];
 
-        // Masukkan data baru
-        Item::insert($items);
-
-        $this->command->info('Database Lalapan Cak Der sudah DIBERSIHKAN dan diisi ulang sesuai list gambar!');
+        foreach ($items as $item) {
+            Item::updateOrCreate(['name' => $item['name']], $item);
+        }
     }
 }
